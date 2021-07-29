@@ -13,7 +13,7 @@ export const getPosts = async (req, res) => {
 export const createPost = async (req, res) => {
     const post = req.body
 
-    const newPost = new postMessage(post)
+    const newPost = new PostMessage(post)
 
     try {
        await newPost.save(); 
@@ -24,4 +24,16 @@ export const createPost = async (req, res) => {
     }
     
     
+}
+
+export const updatePost = async (req, res) => {
+    const { id: _id } = req.params;
+    const post = req.body
+    
+    if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send('No post with that id')
+
+    // The 3rd param 'new: true' allows us to actually see the updated post
+    const updatedPost = await PostMessage.findByIdAndUpdate(_id, post, { new: true})
+
+    res.json(updatedPost)
 }
